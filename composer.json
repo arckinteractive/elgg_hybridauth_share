@@ -1,0 +1,36 @@
+{
+	"name": "arckinteractive/elgg_hybridauth_share",
+	"type": "elgg-plugin",
+	"repository": "ArckInteractive/elgg_hybridauth",
+	"description": "Sharing add-on for HybridAuth",
+	"homepage": "http://arckinteractive.com",
+	"minimum-stability": "dev",
+	"keywords": [
+		"elgg", "plugin", "social", "connect", "auth", "login", "OpenId", "Twitter", "Facebook", "Google", "Hybridauth", "Yahoo"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov"
+		},
+		{
+			"name": "Matt Beckett"
+		}
+	],
+	"extra": {
+		"installer-name": "elgg_hybridauth_share"
+	},
+		"config": {
+		"vendor-dir": "vendors",
+		"preferred-install": "dist"
+	},
+	"autoload": {
+		"classmap": ["classes/"]
+	},
+	"require": {
+		"php": ">=5.3.3",
+		"composer/installers": ">=1.0.8",
+		"arckinteractive/elgg_hybridauth": "*"
+	}
+}
+

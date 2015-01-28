@@ -21,9 +21,12 @@ foreach ($providers as $provider) {
 			'value' => $provider,
 			'data-provider' => $provider,
 			'class' => 'hybridauth-share-destination-checkbox',
+			'checked' => false,
 		);
 		if (!elgg_hybridauth_share_check_permissions($provider)) {
 			$attributes['data-auth'] = true;
+		} else {
+			$attributes['checked'] = true;
 		}
 		$attrs = elgg_format_attributes($attributes);
 		

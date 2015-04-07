@@ -2,7 +2,7 @@
 
 function elgg_hybridauth_share_check_permissions($provider) {
 
-	$uid = elgg_get_plugin_user_setting("$provider:uid", $guid, 'elgg_hybridauth');
+	$uid = elgg_get_plugin_user_setting("$provider:uid", elgg_get_logged_in_user_guid(), 'elgg_hybridauth');
 
 	if (!$uid) {
 		return false;
@@ -22,7 +22,7 @@ function elgg_hybridauth_share_check_permissions($provider) {
 			switch ($provider) {
 
 				case 'Facebook' :
-					$result = $adapter->adapter->api->api("/$uid/permissions", "GET", array());
+					$result = $adapter->adapter->api->api("/v2.1/$uid/permissions", "GET", array());
 					foreach ($result['data'] as $permission) {
 						if ($permission['permission'] == 'publish_actions' && $permission['status'] == 'granted') {
 							return true;

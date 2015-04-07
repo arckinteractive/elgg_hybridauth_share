@@ -26,7 +26,7 @@ function elgg_hybridauth_share_event($event, $type, $entity) {
 		return true;
 	}
 
-	$params = array(
+	$default_params = array(
 		'message' => $entity->description,
 		'link' => $entity->getURL(),
 		'picture' => $entity->getIconURL('large'),
@@ -37,11 +37,13 @@ function elgg_hybridauth_share_event($event, $type, $entity) {
 	switch ($subtype) {
 
 		default :
-			$params = elgg_trigger_plugin_hook('hybridauth:share', $subtype, array('entity' => $entity), $params);
+			$gen_params = elgg_trigger_plugin_hook('hybridauth:share', $subtype, array('entity' => $entity), $default_params);
+			$gen_params = array_filter($gen_params);
 			break;
 	}
-
+	
 	foreach ($destinations as $provider) {
+		$params = elgg_trigger_plugin_hook('hybridauth:share:' . $provider, $subtype, array('entity' => $entity), $gen_params);
 
 		try {
 			$ha = new ElggHybridAuth();
@@ -60,7 +62,8 @@ function elgg_hybridauth_share_event($event, $type, $entity) {
 
 				case 'Twitter' :
 					$link = $params['link'];
-					$status = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], 130 - strlen($postfix)), $link, $postfix)));
+					$length = ($link) ? 114 : 137; // t.co link is 23 chars long + 3 spaces
+					$status = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], $length - strlen($postfix)), $link, $postfix)));
 					$adapter->setUserStatus($status);
 					break;
 

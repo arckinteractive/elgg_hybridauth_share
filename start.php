@@ -15,18 +15,13 @@ function elgg_hybridauth_share_init() {
 		'Facebook',
 		'Twitter',
 		'LinkedIn',
-			//'Identica',
-			//'QQ',
-			//'Sina',
-			//'Murmur',
-			//'Pixnet',
-			//'Plurk'
 	));
 
 	elgg_set_config('hybridauth_share_subtypes', array());
 	elgg_set_config('hybridauth_share_postfix', 'via ' . elgg_get_site_entity()->name);
 	
-	elgg_register_js('hybridauth.share.js', elgg_get_simplecache_url('js', 'hybridauth/share'));
+    // Loaded from min
+	//elgg_register_js('hybridauth.share.js', elgg_get_simplecache_url('js', 'hybridauth/share'));
 	elgg_register_css('hybridauth.share.css', elgg_get_simplecache_url('css', 'hybridauth/share'));
 
 	elgg_register_event_handler('create', 'object', 'elgg_hybridauth_share_event');

@@ -7,9 +7,9 @@
  * @return void
  */
 function elgg_hybridauth_share_log($message, $operation = 'API') {
-//	if (!elgg_get_config('debug')) {
-//		return;
-//	}
+	if (!elgg_get_config('debug')) {
+		return;
+	}
 
 	$file = elgg_get_config('dataroot') . 'elgg_hybridauth_share_log';
 	file_put_contents($file, date(DATE_RSS) . " ($operation): " . $message . "\n", FILE_APPEND);

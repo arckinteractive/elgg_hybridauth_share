@@ -1,69 +1,131 @@
 <?php
 
+$session_owner = elgg_extract('session_owner', $vars, elgg_get_logged_in_user_entity());
+$session_name = elgg_extract('session_name', $vars);
+$session_handle = elgg_extract('session_handle', $vars);
+
 elgg_load_css('hybridauth.css');
 elgg_load_css('hybridauth.share.css');
 elgg_load_js('hybridauth.share.js');
 
+$ha_session = new \Elgg\HybridAuth\Session($session_owner, $session_name, $session_handle);
+$providers = $ha_session->getEnabledProviders();
 
-$user = elgg_get_logged_in_user_entity();
+foreach ($providers as $ha_provider) {
 
-$providers = elgg_get_config('hybridauth_share_providers');
+	$provider = $ha_provider->getName();
+	$share_on = elgg_get_plugin_setting($provider, 'elgg_hybridauth_share');
+	if (!$share_on) {
+		continue;
+	}
 
-foreach ($providers as $provider) {
+	$scope = '';
+	switch ($provider) {
+		case 'Facebook' :
+			$scope = 'publish_actions';
+			break;
 
-	$adapter = false;
+		case 'LinkedIn' :
+			$scope = 'w_share';
+			break;
 
-	try {
-		$attributes = array(
-			'type' => 'checkbox',
-			'name' => 'hybridauth_share[]',
-			'value' => $provider,
-			'data-provider' => $provider,
-			'class' => 'hybridauth-share-destination-checkbox',
-			'checked' => false,
-		);
+	}
+	
+	$attributes = array(
+		'type' => 'checkbox',
+		'name' => 'hybridauth_share[]',
+		'value' => $provider,
+		'data-provider' => $provider,
+		'data-href' => elgg_normalize_url(elgg_http_add_url_query_elements('action/hybridauth/can_share', array(
+			'provider' => $provider,
+			'scope' => $scope,
+			'session_owner_guid' => $session_owner->guid,
+			'session_name' => $session_name,
+			'session_handle' => $session_handle,
+		))),
+		'class' => 'hybridauth-share-destination-checkbox',
+		'checked' => false,
+	);
 
-		//if (!elgg_hybridauth_share_check_permissions($provider)) {
-        if (!elgg_get_plugin_user_setting("$provider:uid", $user->guid, 'elgg_hybridauth')) {
-			$attributes['data-auth'] = true;
-		} else {
-			$attributes['checked'] = true;
-		}
+	$attrs = elgg_format_attributes($attributes);
 
-		$attrs = elgg_format_attributes($attributes);
-		
-		$form .= '<li>';
-		$form .= '<label class="hybridauth-share-destination">';
-		$form .= "<input $attrs />";
-		$form .= elgg_view_icon(strtolower("auth-$provider")) . elgg_echo("hybridauth:share:$provider");
-		$form .= '</label>';
-		$form .= '</li>';
-		
-		if (strtolower($provider) == 'facebook' && $attributes['checked']) {
-			$pages = (array) $user->_hybridauth_facebook_share_pages;
-			if ($pages) {
-				foreach ($pages as $page) {
-					$parts = explode('::', $page);
-					$attributes['checked'] = false;
-					$attributes['data-provider'] = 'facebook-page-' . $parts[0];
-					$attributes['value'] = 'facebook-page-' . $parts[0];
-					$attrs = elgg_format_attributes($attributes);
-					
-					$form .= '<li>';
-					$form .= '<label class="hybridauth-share-destination">';
-					$form .= "<input $attrs />";
-					$form .= elgg_view_icon(strtolower("auth-$provider")) . $parts[1];
-					$form .= '</label>';
-					$form .= '</li>';
-				}
+	$form .= '<li>';
+	$form .= '<label class="hybridauth-share-destination">';
+	$form .= "<input $attrs />";
+	$form .= elgg_view_icon(strtolower("auth-$provider")) . elgg_echo("hybridauth:share:$provider");
+	$form .= '</label>';
+	$form .= '</li>';
+
+	if (elgg_get_plugin_setting('fb_pages', 'elgg_hybridauth_share') && strtolower($provider) == 'facebook') {
+		$pages = (array) $session_owner->_hybridauth_facebook_share_pages;
+		if ($pages) {
+			foreach ($pages as $page) {
+				list($page_uid, $page_name) = explode('::', $page);
+				$attributes['data-href'] = elgg_normalize_url(elgg_http_add_url_query_elements('action/hybridauth/can_share', array(
+					'provider' => 'Facebook',
+					'page_uid' => $page_uid,
+					'scope' => 'publish_actions,manage_pages',
+					'session_owner_guid' => $session_owner->guid,
+					'session_name' => $session_name,
+					'session_handle' => $session_handle,
+				)));
+				$attributes['data-provider'] = 'Facebook';
+				$attributes['value'] = "Facebook-{$page_uid}";
+				$attrs = elgg_format_attributes($attributes);
+
+				$form .= '<li>';
+				$form .= '<label class="hybridauth-share-destination">';
+				$form .= "<input $attrs />";
+				$form .= elgg_view_icon(strtolower("auth-$provider")) . $page_name;
+				$form .= '</label>';
+				$form .= '</li>';
 			}
 		}
+	}
 
-	} catch (Exception $e) {
-		// service is not enabled
+		if (elgg_get_plugin_setting('linkedin_pages', 'elgg_hybridauth_share') && strtolower($provider) == 'linkedin') {
+		$pages = (array) $session_owner->_hybridauth_linkedin_share_pages;
+		if ($pages) {
+			foreach ($pages as $page) {
+				list($page_uid, $page_name) = explode('::', $page);
+				$attributes['data-href'] = elgg_normalize_url(elgg_http_add_url_query_elements('action/hybridauth/can_share', array(
+					'provider' => 'LinkedIn',
+					'page_uid' => $page_uid,
+					'scope' => urlencode('w_share+rw_company_admin'),
+					'session_owner_guid' => $session_owner->guid,
+					'session_name' => $session_name,
+					'session_handle' => $session_handle,
+				)));
+				$attributes['data-provider'] = 'LinkedIn';
+				$attributes['value'] = "LinkedIn-{$page_uid}";
+				$attrs = elgg_format_attributes($attributes);
+
+				$form .= '<li>';
+				$form .= '<label class="hybridauth-share-destination">';
+				$form .= "<input $attrs />";
+				$form .= elgg_view_icon(strtolower("auth-$provider")) . $page_name;
+				$form .= '</label>';
+				$form .= '</li>';
+			}
+		}
 	}
 }
 
 if ($form) {
-	echo '<ul class="hybridauth-share-providers">' . $form . '</ul>';
+	echo '<ul class="hybridauth-share-providers hidden">' . $form . '</ul>';
 }
+
+echo elgg_view('input/hidden', array(
+	'name' => 'session_owner_guid',
+	'value' => $session_owner->guid,
+));
+
+echo elgg_view('input/hidden', array(
+	'name' => 'session_name',
+	'value' => $session_name,
+));
+
+echo elgg_view('input/hidden', array(
+	'name' => 'session_handle',
+	'value' => $session_handle,
+));

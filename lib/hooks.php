@@ -1,36 +1,53 @@
 <?php
 
-/**
- * Display a helpful message when the auth is complete in a popup
- * @param string $hook	'route'
- * @param string $type	'hybridauth'
- * @param array $return
- * @return boolean
- */
-function elgg_hybridauth_share_router($hook, $type, $return) {
-
-	$segments = elgg_extract('segments', $return);
-
-	if ($segments[0] == 'popup') {
-		echo elgg_view_page('', elgg_view('hybridauth/popup'));
-		return false;
-	}
-
-	return $return;
-}
-
 
 /**
  * Facebook has just been authenticated
  * we're looking for pages they manage to see if there are access tokens
+ * This doesn't store actual tokens, only caches a list of pages to display in the form
  * 
- * @param type $hook
- * @param type $provider
- * @param type $return
- * @param type $params
+ * @param string $hook     "hybridauth:authenticate"
+ * @param string $provider "Facebook"
+ * @param mixed  $return   No expected return
+ * @param array  $params   Hook params
+ * @return void
  */
 function elgg_hybridauth_fb_authenticate($hook, $provider, $return, $params) {
-	$user = $params['entity'];
 	
-	elgg_hybridauth_share_update_fb_pages($user);
+	if (!elgg_get_plugin_setting('fb_pages', 'elgg_hybridauth_share')) {
+		return;
+	}
+	
+	$user = elgg_extract('entity', $params);
+	if (!$user instanceof ElggUser) {
+		return;
+	}
+
+	$pages = elgg_hybridauth_share_update_fb_pages($user);
+	$user->_hybridauth_facebook_share_pages = $pages;
+}
+
+/**
+ * LinkedIN has just been authenticated
+ * we're looking for companies they administer
+ *
+ * @param string $hook     "hybridauth:authenticate"
+ * @param string $provider "LinkedIn"
+ * @param mixed  $return   No expected return
+ * @param array  $params   Hook params
+ * @return void
+ */
+function elgg_hybridauth_linkedin_authenticate($hook, $provider, $return, $params) {
+
+	if (!elgg_get_plugin_setting('linkedin_pages', 'elgg_hybridauth_share')) {
+		return;
+	}
+
+	$user = elgg_extract('entity', $params);
+	if (!$user instanceof ElggUser) {
+		return;
+	}
+
+	$pages = elgg_hybridauth_share_update_linkedin_pages($user);
+	$user->_hybridauth_linkedin_share_pages = $pages;
 }

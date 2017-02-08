@@ -8,12 +8,25 @@
 	<website>http://www.arckinteractive.com/</website>
 	<copyright>See COPYRIGHT.txt</copyright>
 	<license>GNU General Public License version 2</license>
+
 	<requires>
 		<type>elgg_release</type>
-		<version>1.8</version>
+		<version>2.3</version>
 	</requires>
+
 	<requires>
 		<type>plugin</type>
 		<name>elgg_hybridauth</name>
 	</requires>
+
+	<suggests>
+		<type>plugin</type>
+		<name>hypeWall</name>
+	</suggests>
+
+	<suggests>
+		<type>plugin</type>
+		<name>thewire</name>
+	</suggests>
+	
 </plugin_manifest>

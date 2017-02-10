@@ -270,8 +270,13 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 	} else if ($attachments = $entity->getAttachments()) {
 		$attachment = array_shift($attachments);
 		$return['link'] = $attachment->getURL();
-		if ($attachment->hasIcon('master')) {
-			$return['picture'] = elgg_get_embed_url($attachment, 'master');
+		
+		$icon_sizes = ['master', 'large', 'medium'];
+		foreach ($icon_sizes as $icon) {
+			if ($attachment->hasIcon($icon)) {
+				$return['picture'] = elgg_get_embed_url($attachment, $icon);
+				break;
+			}
 		}
 		$return['name'] = $attachment->getDisplayName();
 	}

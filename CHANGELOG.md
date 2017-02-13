@@ -1,3 +1,13 @@
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.4...v2.0.5) (2017-02-13)
+
+
+### Bug Fixes
+
+* **attachment:** use public url for shared images regardless of internal access ([52a4acd](https://github.com/arckinteractive/elgg_hybridauth_share/commit/52a4acd))
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.3...v2.0.4) (2017-02-10)
 

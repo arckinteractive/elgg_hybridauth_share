@@ -274,7 +274,7 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 		$icon_sizes = ['master', 'large', 'medium'];
 		foreach ($icon_sizes as $icon) {
 			if ($attachment->hasIcon($icon)) {
-				$return['picture'] = elgg_get_embed_url($attachment, $icon);
+				$return['picture'] = elgg_get_inline_url($attachment, false, '');
 				break;
 			}
 		}

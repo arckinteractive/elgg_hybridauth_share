@@ -1,3 +1,13 @@
+<a name="2.0.6"></a>
+## [2.0.6](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.5...v2.0.6) (2017-02-16)
+
+
+### Bug Fixes
+
+* **twitter:** allow sharing pictures to twitter ([a2bd106](https://github.com/arckinteractive/elgg_hybridauth_share/commit/a2bd106))
+
+
+
 <a name="2.0.5"></a>
 ## [2.0.5](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.4...v2.0.5) (2017-02-13)
 

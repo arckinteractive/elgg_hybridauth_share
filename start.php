@@ -160,6 +160,13 @@ function elgg_hybridauth_share_event($event, $entity_type, $entity) {
 					$link = $params['link'];
 					$length = ($link) ? 114 : 137; // t.co link is 23 chars long + 3 spaces
 					$status = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], $length), $link)));
+					
+					if ($params['picture']) {
+						$status = [
+							'message' => $status,
+							'picture' => $params['picture']
+						];
+					}
 					$adapter->setUserStatus($status);
 					break;
 

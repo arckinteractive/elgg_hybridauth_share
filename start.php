@@ -31,6 +31,10 @@ function elgg_hybridauth_share_init() {
 
 	elgg_register_plugin_hook_handler('hybridauth:share', 'thewire', 'elgg_hybridauth_share_prepare_wall_post');
 	elgg_register_plugin_hook_handler('hybridauth:share', 'hjwall', 'elgg_hybridauth_share_prepare_wall_post');
+	
+	elgg_register_plugin_hook_handler('public_pages', 'walled_garden', 'elgg_hybridauth_share_public_pages');
+	elgg_register_plugin_hook_handler('head', 'page', 'elgg_hybridauth_share_metatags');
+	elgg_register_plugin_hook_handler('entity:icon:sizes', 'all', 'elgg_hybridauth_share_icon_sizes');
 
 	// Integrate with the wire form
 	elgg_extend_view('forms/thewire/add', 'hybridauth/share');
@@ -289,4 +293,114 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 	}
 
 	return $return;
+}
+
+function elgg_hybridauth_share_public_pages($hook, $type, $return, $params) {
+	
+	if (elgg_hybridauth_share_is_fb_user_agent()) {
+		$return[] = 'file/view/.*';
+	}
+    return $return;
+}
+
+/**
+ * Is this a scrape by the Facebook preview generator?
+ * 
+ * @return boolean
+ */
+function elgg_hybridauth_share_is_fb_user_agent() {
+	if (
+		strpos($_SERVER['HTTP_USER_AGENT'], "facebookexternalhit/") !== false ||
+		strpos($_SERVER['HTTP_USER_AGENT'], "Facebot") != false
+	) {
+		return true;
+	}
+	
+	return false;
+}
+
+function elgg_hybridauth_share_metatags($hook, $type, $return, $params) {
+	if (!elgg_hybridauth_share_is_fb_user_agent()) {
+		return $return;
+	}
+	
+	$wall_post = elgg_get_page_owner_entity();
+	if (!elgg_instanceof($wall_post, 'object', 'hjwall')) {
+		return $return;
+	}
+	
+	if ($attachments = $wall_post->getAttachments()) {
+		$attachment = array_shift($attachments);
+	}
+	
+	if (!$attachment) {
+		return $return;
+	}
+	
+	$icon = $attachment->getIcon('og_fb');
+	elgg_hybridauth_share_fb_icon_resize($icon);
+
+	$url = _elgg_services()->iconService->getIconURL($attachment, 'og_fb');
+	if ($url) {
+		$return['metas']['og:image']['property'] = 'og:image';
+		$return['metas']['og:image']['content'] = $url;
+	}
+
+	return $return;
+}
+
+function elgg_hybridauth_share_icon_sizes($hook, $type, $return, $params) {
+	//@TODO - need to find a way to pad it to exact dimensions.  This just sets max w/h
+	$return['og_fb'] = [
+		'w' => 1200,
+		'h' => 630,
+		'square' => false,
+		'upscale' => true
+	];
+	
+	return $return;
+}
+
+function elgg_hybridauth_share_fb_icon_resize($icon) {
+	if (!$icon instanceof \ElggIcon) {
+		return;
+	}
+	
+	list($w, $h) = getimagesize($icon->getFilenameOnFilestore());
+	if ($w && $h) {
+		if ($w == 1200 && $h == 630) {
+			return;
+		}
+		
+		// we need to pad the image to that size
+		$output_w = 1200;
+		$output_h = 630;
+		
+		
+		$inner_w = $inner_h = min([max([$w, $h])]);
+		if ($h > $w) {
+			$scale = $inner_w/$h;
+		}
+		else {
+			$scale = $inner_h/$w;
+		}
+		
+		$new_w = $w * $scale;
+		$new_h = $h * $scale;
+		$offset_x = ($output_w - $w) / 2;
+		$offset_y = ($output_h - $h) / 2;
+
+		$src_image = imagecreatefromstring(file_get_contents($icon->getFilenameOnFilestore()));
+		
+		$image = imagecreatetruecolor($output_w, $output_h);
+		$bgcolor = imagecolorallocate($image, 255, 255, 255); // transparency
+		//$bgcolor = imagecolorallocate($image, 127, 127, 127);
+		imagefill($image, 0, 0, $bgcolor);
+		
+		// copy uploaded image onto the square background
+		imagecopyresampled($image, $src_image, $offset_x, $offset_y, 0, 0, $new_w, $new_h, $w, $h);
+		
+		imagejpeg($image, $icon->getFilenameOnFilestore());
+		imagedestroy($image);
+	}
 }

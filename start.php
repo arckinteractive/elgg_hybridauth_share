@@ -323,7 +323,7 @@ function elgg_hybridauth_share_metatags($hook, $type, $return, $params) {
 	if (!elgg_hybridauth_share_is_fb_user_agent()) {
 		return $return;
 	}
-	
+
 	$wall_post = elgg_get_page_owner_entity();
 	if (!elgg_instanceof($wall_post, 'object', 'hjwall')) {
 		return $return;
@@ -337,11 +337,12 @@ function elgg_hybridauth_share_metatags($hook, $type, $return, $params) {
 		return $return;
 	}
 	
-	$icon = $attachment->getIcon('og_fb');
+	$icon = $attachment->getIcon('open_graph_image');
 	elgg_hybridauth_share_fb_icon_resize($icon);
 
-	$url = _elgg_services()->iconService->getIconURL($attachment, 'og_fb');
+	$url = _elgg_services()->iconService->getIconURL($attachment, 'open_graph_image');
 	if ($url) {
+		$return['links']['canonical'] = ['rel' => 'canonical', 'href' => current_page_url()];
 		$return['metas']['og:image']['property'] = 'og:image';
 		$return['metas']['og:image']['content'] = $url;
 	}
@@ -349,9 +350,10 @@ function elgg_hybridauth_share_metatags($hook, $type, $return, $params) {
 	return $return;
 }
 
+//@TODO - this isn't really working - hypeDiscovery is all taking over this and who knows what's going on
 function elgg_hybridauth_share_icon_sizes($hook, $type, $return, $params) {
 	//@TODO - need to find a way to pad it to exact dimensions.  This just sets max w/h
-	$return['og_fb'] = [
+	$return['open_graph_image'] = [
 		'w' => 1200,
 		'h' => 630,
 		'square' => false,

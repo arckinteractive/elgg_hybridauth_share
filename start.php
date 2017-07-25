@@ -311,7 +311,7 @@ function elgg_hybridauth_share_public_pages($hook, $type, $return, $params) {
 function elgg_hybridauth_share_is_fb_user_agent() {
 	if (
 		strpos($_SERVER['HTTP_USER_AGENT'], "facebookexternalhit/") !== false ||
-		strpos($_SERVER['HTTP_USER_AGENT'], "Facebot") != false
+		strpos($_SERVER['HTTP_USER_AGENT'], "Facebot") !== false
 	) {
 		return true;
 	}

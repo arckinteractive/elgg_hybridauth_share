@@ -33,6 +33,7 @@ function elgg_hybridauth_share_init() {
 	elgg_register_plugin_hook_handler('hybridauth:share', 'hjwall', 'elgg_hybridauth_share_prepare_wall_post');
 	
 	elgg_register_plugin_hook_handler('public_pages', 'walled_garden', 'elgg_hybridauth_share_public_pages');
+	elgg_register_plugin_hook_handler('view', 'resources/file/view', 'elgg_hybridauth_share_file_view');
 	elgg_register_plugin_hook_handler('head', 'page', 'elgg_hybridauth_share_metatags');
 	elgg_register_plugin_hook_handler('entity:icon:sizes', 'all', 'elgg_hybridauth_share_icon_sizes');
 
@@ -348,6 +349,22 @@ function elgg_hybridauth_share_metatags($hook, $type, $return, $params) {
 	}
 
 	return $return;
+}
+
+/**
+ * intercept file view
+ * 
+ * @param type $hook
+ * @param type $type
+ * @param type $return
+ * @param type $params
+ */
+function elgg_hybridauth_share_file_view($hook, $type, $return, $params) {
+	if (!elgg_hybridauth_share_is_fb_user_agent()) {
+		return $return;
+	}
+	
+	return elgg_view_page('OG:Exemption', '');
 }
 
 //@TODO - this isn't really working - hypeDiscovery is all taking over this and who knows what's going on

@@ -163,16 +163,61 @@ function elgg_hybridauth_share_event($event, $entity_type, $entity) {
 
 				case 'Twitter' :
 					$link = $params['link'];
-					$length = ($link) ? 114 : 137; // t.co link is 23 chars long + 3 spaces
-					$status = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], $length), $link)));
-					
-					if ($params['picture']) {
-						$status = [
-							'message' => $status,
-							'picture' => $params['picture']
-						];
+					$length = ($link) ? 674 : 700; // t.co link is 23 chars long + 3 spaces
+					$message = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], $length), $link)));
+	
+					if (strlen($message) > 140) {
+						// break up long posts into multiple tweets
+						$tweet_maxlength = 133; // allow for 6 extra characters: ' (1/4)' and an extra space
+						$text_array = explode(' ', $message);
+						$i=0;
+						$messages = [''];
+						foreach ($text_array as $word) {
+							if (strlen($messages[$i] . $word . ' ') > $tweet_maxlength) {
+								$i++;
+							}
+							$messages[$i] .= $word . ' ';
+						}
 					}
-					$adapter->setUserStatus($status);
+					else {
+						$messages = [$message];
+					}
+					
+					$id = '';
+					$username = '';
+
+					foreach ($messages as $key => $message) {
+						$prefix = '';
+						if (count($messages) > 1) {
+							$prefix = '(' . ($key + 1) . '/' . count($messages) . ') ';
+						}
+						
+						$status = [
+							'message' => $prefix . $message
+						];
+						
+						if ($username) {
+							// supposedly required for use with in_reply_to_status_id
+							//$status['message'] = '@' . $username . ' ' . $status['message'];
+						}
+						
+						if ($params['picture'] && $key === 0) {
+							$status = ['picture' => $params['picture']];
+						}
+						
+						if ($id) {
+							// this isn't working, dunno why...
+							//$status['in_reply_to_status_id'] = $id;
+						}
+						
+
+						$response = $adapter->setUserStatus($status);
+						if ($response->id_str) {
+							$id = (string) $response->id_str;
+							$username = $response->user->screen_name;
+						}
+					}
+					
 					break;
 
 				case 'LinkedIn' :

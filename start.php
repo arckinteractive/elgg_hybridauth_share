@@ -202,7 +202,7 @@ function elgg_hybridauth_share_event($event, $entity_type, $entity) {
 						}
 						
 						if ($params['picture'] && $key === 0) {
-							$status = ['picture' => $params['picture']];
+							$status['picture'] = $params['picture'];
 						}
 						
 						if ($id) {

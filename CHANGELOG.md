@@ -1,3 +1,13 @@
+<a name="2.0.10"></a>
+## [2.0.10](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.9...v2.0.10) (2017-08-03)
+
+
+### Bug Fixes
+
+* **twitter:** picture can have text again ([23720dd](https://github.com/arckinteractive/elgg_hybridauth_share/commit/23720dd))
+
+
+
 <a name="2.0.9"></a>
 ## [2.0.9](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.8...v2.0.9) (2017-08-03)
 

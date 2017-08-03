@@ -1,3 +1,9 @@
+<a name="2.0.9"></a>
+## [2.0.9](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.8...v2.0.9) (2017-08-03)
+
+
+
+
 <a name="2.0.8"></a>
 ## [2.0.8](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.7...v2.0.8) (2017-08-02)
 

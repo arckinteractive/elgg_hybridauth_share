@@ -1,3 +1,16 @@
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.10...v2.1.0) (2017-08-04)
+
+
+### Bug Fixes
+
+* **access:** add fallback integration with hypeDiscovery for cross-posts ([f02a12f](https://github.com/arckinteractive/elgg_hybridauth_share/commit/f02a12f))
+* **access:** only send file URL to Facebook if it is public ([7162ddf](https://github.com/arckinteractive/elgg_hybridauth_share/commit/7162ddf))
+* **access:** use picture as link if entity is not public ([fcd3073](https://github.com/arckinteractive/elgg_hybridauth_share/commit/fcd3073))
+* **access:** use picture URL as link for non-public attachments ([c2cb14a](https://github.com/arckinteractive/elgg_hybridauth_share/commit/c2cb14a))
+
+
+
 <a name="2.0.10"></a>
 ## [2.0.10](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.9...v2.0.10) (2017-08-03)
 

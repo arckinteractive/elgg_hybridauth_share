@@ -326,8 +326,12 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 		$return['link'] = $entity->address;
 	} else if ($attachments = $entity->getAttachments()) {
 		$attachment = array_shift($attachments);
-		$return['link'] = $attachment->getURL();
-		
+
+		if ($attachment->access_id == ACCESS_PUBLIC) {
+			$return['link'] = $attachment->getURL();
+			$return['name'] = $attachment->getDisplayName();
+		}
+
 		$icon_sizes = ['master', 'large', 'medium'];
 		foreach ($icon_sizes as $icon) {
 			if ($attachment->hasIcon($icon)) {
@@ -335,7 +339,6 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 				break;
 			}
 		}
-		$return['name'] = $attachment->getDisplayName();
 	}
 
 	return $return;

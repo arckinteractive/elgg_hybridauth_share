@@ -334,23 +334,29 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 	} else if ($attachments = $entity->getAttachments()) {
 		$attachment = array_shift($attachments);
 
+		$icon_sizes = ['master', 'large', 'medium'];
+		foreach ($icon_sizes as $icon) {
+			if ($attachment->hasIcon($icon)) {
+				$picture = elgg_get_inline_url($attachment, false, '');
+				break;
+			}
+		}
+
+		$return['name'] = $attachment->getDisplayName();
+
 		if ($attachment->access_id == ACCESS_PUBLIC) {
 			$return['link'] = $attachment->getURL();
-			$return['name'] = $attachment->getDisplayName();
 		} else if (elgg_is_active_plugin('hypeDiscovery')) {
 			if (\hypeJunction\Discovery\is_discoverable_type($attachment)) {
 				$attachment->discoverable = true;
 				$return['link'] = \hypeJunction\Discovery\get_entity_permalink($attachment);
-				$return['name'] = $attachment->getDisplayName();
 			}
 		}
 
-		$icon_sizes = ['master', 'large', 'medium'];
-		foreach ($icon_sizes as $icon) {
-			if ($attachment->hasIcon($icon)) {
-				$return['picture'] = elgg_get_inline_url($attachment, false, '');
-				break;
-			}
+		if (empty($return['link'])) {
+			$return['link'] = $picture;
+		} else {
+			$return['picture'] = $picture;
 		}
 	}
 

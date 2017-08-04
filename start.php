@@ -158,7 +158,14 @@ function elgg_hybridauth_share_event($event, $entity_type, $entity) {
 			switch ($provider_name) {
 				case 'Facebook' :
 					$token = $adapter->getAccessToken();
-					$adapter->api()->post('/me/feed', $params, $token['access_token']);
+					$response = $adapter->api()->post('/me/feed', $params, $token['access_token']);
+					/* @var $response \Facebook\FacebookResponse */
+
+					$debug_mode = (bool) elgg_get_plugin_setting('debug_mode', 'elgg_hybridauth');
+					if ($debug_mode) {
+						$file = elgg_get_config('dataroot') . 'elgg_hybridauth_debug';
+						file_put_contents($file, PHP_EOL . PHP_EOL . $response->getBody() . PHP_EOL . PHP_EOL, FILE_APPEND | LOCK_EX);
+					}
 					break;
 
 				case 'Twitter' :

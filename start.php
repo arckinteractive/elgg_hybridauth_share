@@ -331,9 +331,11 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 			$return['link'] = $attachment->getURL();
 			$return['name'] = $attachment->getDisplayName();
 		} else if (elgg_is_active_plugin('hypeDiscovery')) {
-			$attachment->discoverable = true;
-			$return['link'] = \hypeJunction\Discovery\get_entity_permalink($attachment);
-			$return['name'] = $attachment->getDisplayName();
+			if (\hypeJunction\Discovery\is_discoverable_type($attachment)) {
+				$attachment->discoverable = true;
+				$return['link'] = \hypeJunction\Discovery\get_entity_permalink($attachment);
+				$return['name'] = $attachment->getDisplayName();
+			}
 		}
 
 		$icon_sizes = ['master', 'large', 'medium'];

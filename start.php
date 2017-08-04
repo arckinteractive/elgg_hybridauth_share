@@ -333,6 +333,7 @@ function elgg_hybridauth_share_prepare_wall_post($hook, $type, $return, $params)
 		} else if (elgg_is_active_plugin('hypeDiscovery')) {
 			$attachment->discoverable = true;
 			$return['link'] = \hypeJunction\Discovery\get_entity_permalink($attachment);
+			$return['name'] = $attachment->getDisplayName();
 		}
 
 		$icon_sizes = ['master', 'large', 'medium'];

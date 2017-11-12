@@ -168,9 +168,9 @@ function elgg_hybridauth_share_event($event, $entity_type, $entity) {
 					$length = ($link) ? 674 : 700; // t.co link is 23 chars long + 3 spaces
 					$message = implode(' ', array_filter(array(elgg_get_excerpt($params['message'], $length), $link)));
 	
-					if (strlen($message) > 140) {
+					if (strlen($message) > 280) {
 						// break up long posts into multiple tweets
-						$tweet_maxlength = 133; // allow for 6 extra characters: ' (1/4)' and an extra space
+						$tweet_maxlength = 273; // allow for 6 extra characters: ' (1/4)' and an extra space
 						$text_array = explode(' ', $message);
 						$i=0;
 						$messages = [''];

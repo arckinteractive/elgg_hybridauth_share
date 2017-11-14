@@ -1,3 +1,24 @@
+<a name="2.1.1"></a>
+## 2.1.1 (2017-11-14)
+
+
+### Bug Fixes
+
+* **access:** add fallback integration with hypeDiscovery for cross-posts ([f02a12f](https://github.com/arckinteractive/elgg_hybridauth_share/commit/f02a12f))
+* **access:** only send file URL to Facebook if it is public ([7162ddf](https://github.com/arckinteractive/elgg_hybridauth_share/commit/7162ddf))
+* **access:** use picture as link if entity is not public ([fcd3073](https://github.com/arckinteractive/elgg_hybridauth_share/commit/fcd3073))
+* **access:** use picture URL as link for non-public attachments ([c2cb14a](https://github.com/arckinteractive/elgg_hybridauth_share/commit/c2cb14a))
+* **attachment:** use public url for shared images regardless of internal access ([52a4acd](https://github.com/arckinteractive/elgg_hybridauth_share/commit/52a4acd))
+* **release:** attempt grunt release ([4b1d44c](https://github.com/arckinteractive/elgg_hybridauth_share/commit/4b1d44c))
+* **twitter:** allow sharing pictures to twitter ([a2bd106](https://github.com/arckinteractive/elgg_hybridauth_share/commit/a2bd106))
+* **twitter:** picture can have text again ([23720dd](https://github.com/arckinteractive/elgg_hybridauth_share/commit/23720dd))
+
+### Features
+
+* **releases:** update for Elgg 2.3 ([08269a2](https://github.com/arckinteractive/elgg_hybridauth_share/commit/08269a2))
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/arckinteractive/elgg_hybridauth_share/compare/2.0.10...v2.1.0) (2017-08-04)
 

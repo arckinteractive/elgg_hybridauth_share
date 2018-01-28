@@ -2,14 +2,14 @@
 
 elgg_load_css('hybridauth.css');
 
-$user_guid = elgg_get_logged_in_user_guid();
+$user = elgg_get_logged_in_user_entity();
 
 $providers = (array) elgg_get_config('hybridauth_share_providers'); // BC
 $providers = elgg_trigger_plugin_hook('share:providers', 'hybridauth', $vars, $providers);
 
 $fields = [];
 
-$ha_session = new \Elgg\HybridAuth\Session();
+$ha_session = new \Elgg\HybridAuth\Session($user);
 
 foreach ($providers as $provider_name) {
 
@@ -29,7 +29,7 @@ foreach ($providers as $provider_name) {
 		'provider' => $provider_name,
 	], $auth_endpoint);
 
-	$is_connected = $ha_session->isConnected($provider);
+	$is_connected = $ha_session->isAuthenticated($provider);
 
 	$field = [
 		'#type' => 'checkbox',

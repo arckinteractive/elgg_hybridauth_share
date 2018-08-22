@@ -1,6 +1,12 @@
-Content Sharing for Hybridauth Client
+NO LONGER MAINTAINED - Content Sharing for Hybridauth Client
 =====================================
 ![Elgg 2.3](https://img.shields.io/badge/Elgg-2.3.x-orange.svg?style=flat-square)
+
+
+# THIS PROJECT IS DEAD
+Facebook deprecated its publish_actions API scope rendering this and thousands other tools useless.
+
+
 
 A tool that allows sharing of content to hybridauth providers.
 
